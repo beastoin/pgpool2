@@ -398,6 +398,16 @@ static struct config_bool ConfigureNamesBool[] =
 	},
 
 	{
+                {"prefer_lower_delay_standby", CFGCXT_RELOAD, STREAMING_REPLICATION_CONFIG,
+                        "If the load balance node is delayed over delay_threshold on SR, pgpool find another standby node which is lower delayed.",
+                        CONFIG_VAR_TYPE_BOOL, false, 0
+                },
+                &g_pool_config.prefer_lower_delay_standby,
+                false,
+                NULL, NULL, NULL
+        },
+
+	{
 		{"master_slave_mode", CFGCXT_INIT, MASTER_SLAVE_CONFIG,
 			"Enables Master/Slave mode.",
 			CONFIG_VAR_TYPE_BOOL, false, 0

@@ -546,7 +546,18 @@ pool_where_to_send(POOL_QUERY_CONTEXT * query_context, char *query, Node *node)
 								(errmsg("could not load balance because of too much replication delay"),
 								 errdetail("destination = %d for query= \"%s\"", dest, query)));
 
-						pool_set_node_to_be_sent(query_context, PRIMARY_NODE_ID);
+						if (pool_config->prefer_lower_delay_standby)
+                                                {
+                                                        int new_load_balancing_node = select_load_balancing_node();
+
+                                                        session_context->load_balance_node_id = new_load_balancing_node;
+                                                        session_context->query_context->load_balance_node_id = session_context->load_balance_node_id;
+                                                        pool_set_node_to_be_sent(query_context, session_context->query_context->load_balance_node_id);
+                                                }
+                                                else
+                                                {
+                                                        pool_set_node_to_be_sent(query_context, PRIMARY_NODE_ID);
+                                                }
 					}
 
 					/*
